@@ -1,0 +1,30 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+int main()
+{
+	int h = 100;
+	int count = 1;
+	int lista[count];
+	for (int i = 0; i < count; ++i)
+	{
+		printf("el h es :%i\n",h);
+		if(h%2 == 0){
+			h = h / 2;
+			lista[i] = h;
+			if(h == 1){
+				lista[i + 1] = 1;
+				printf("el h es :%i\n",h);
+				count = count;
+				return 0;	
+			}else{
+				count++;
+			}
+		}if(h%2 !=0){
+			h = 3*h + 1;
+			lista[i] = h;
+			count++;
+		}
+	}
+	return 0;
+}
