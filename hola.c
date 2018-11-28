@@ -10,15 +10,8 @@ int main()
 	printf("modificado\n");
 	printf("holaaaaa lol\n");
 	printf("listo\n");
-<<<<<<< HEAD
-<<<<<<< HEAD
 	printf("no descargue nada\n");
-=======
 	printf("el ql rico\n");
->>>>>>> master
-=======
-
->>>>>>> master
 	for (int i = 0; i < count; ++i)
 	{
 		printf("el h es :%i\n",h);
