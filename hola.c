@@ -3,13 +3,14 @@
 
 int main()
 {
+	printf("el ql rico\n");
 	int h = 100;
 	int count = 1;
 	int lista[count];
 	printf("modificado\n");
 	printf("holaaaaa lol\n");
 	printf("listo\n");
-	printf("el ql rico\n");
+
 	for (int i = 0; i < count; ++i)
 	{
 		printf("el h es :%i\n",h);
