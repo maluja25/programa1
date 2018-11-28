@@ -9,6 +9,7 @@ int main()
 	printf("modificado\n");
 	printf("holaaaaa lol\n");
 	printf("listo\n");
+	printf("el ql rico\n");
 	for (int i = 0; i < count; ++i)
 	{
 		printf("el h es :%i\n",h);
