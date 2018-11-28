@@ -3,6 +3,7 @@
 
 int main()
 {
+	printf("el ql rico\n");
 	int h = 100;
 	int count = 1;
 	int lista[count];
@@ -10,9 +11,13 @@ int main()
 	printf("holaaaaa lol\n");
 	printf("listo\n");
 <<<<<<< HEAD
+<<<<<<< HEAD
 	printf("no descargue nada\n");
 =======
 	printf("el ql rico\n");
+>>>>>>> master
+=======
+
 >>>>>>> master
 	for (int i = 0; i < count; ++i)
 	{
