@@ -6,6 +6,7 @@ int main()
 	int h = 100;
 	int count = 1;
 	int lista[count];
+	printf("modificado\n");
 	for (int i = 0; i < count; ++i)
 	{
 		printf("el h es :%i\n",h);
@@ -26,5 +27,6 @@ int main()
 			count++;
 		}
 	}
+
 	return 0;
 }
