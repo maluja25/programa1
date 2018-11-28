@@ -7,6 +7,7 @@ int main()
 	int count = 1;
 	int lista[count];
 	printf("modificado\n");
+	printf("holaaaaa lol\n");
 	for (int i = 0; i < count; ++i)
 	{
 		printf("el h es :%i\n",h);
