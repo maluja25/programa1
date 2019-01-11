@@ -397,16 +397,9 @@ void Menu(){
 		break;
 	}
 }
-int main(){
-	int **matriz = leermatriz();
-	p pos;
-	pos.x = 0;
-	pos.y = 1;
-	correlativo = 0;
+int automatico(int **matriz,p pos){
 	int canAbiertos = 0;
 	int canCerrados = 0;
-	int posx = 0;
-	int posy = 2;
 	posicion * abiertos = (posicion *)malloc(sizeof(posicion)*canAbiertos);
 	posicion * cerrados = (posicion *)malloc(sizeof(posicion)*canCerrados);
 	posicion estado;
@@ -485,8 +478,45 @@ int main(){
 		}
 		printf("\n\n");
 	} 
-	//matrizz();
+
+
+
+
+}
+int main(){
+	int **matriz1 = leermatriz();
+	int **matriz2 = leermatriz();
+	p pos;
+	pos.x = 0;
+	pos.y = 1;
+	correlativo = 0;
 	
+	int posx = 0;
+	int posy = 2;
+	int Menu = 1;
+	int opcion;
+	while(Menu = 1){
+		printf("Menu\n");
+		printf("1 modo automatico\n");
+		printf("2 modo manual\n");
+		printf("3 salir\n");
+		scanf("%i",&opcion);
+		switch(opcion){
+			case 1:
+				system("clear");
+				printf("hola en esto momentos spiderman recorrera la ciudad\n");
+				automatico(matriz1,pos);
+				Menu = 2;
+			break;
+			case 2:
+				system("clear");
+				movimientosManual(matriz2,pos);
+			break;
+			case 3:
+				Menu = 2;
+			break;
+		}
+	}
 	//imprimirMatriz(matriz,pos.x,pos.y);
 	//movimientosManual(matriz,pos);
 	/*while(movimientosManual(matriz,pos)<5){
