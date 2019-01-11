@@ -290,7 +290,10 @@ int imprimirMatriz(int **matriz , int posx ,int posy){
 		printf("\n");
 	}
 }
+
 int movimientosManual(int **matriz,p pos){
+	FILE *registro;
+ 	registro = fopen("registroLab.txt", "a");
 	int n;
 	printf("posx%i , posy=%i\n",pos.x,pos.y);
 	imprimirMatriz(matriz,pos.x,pos.y);
@@ -314,6 +317,9 @@ int movimientosManual(int **matriz,p pos){
 				movimientosManual(matriz,pos);
 			}
 			else{
+				int N = 'N';
+				fputc(N,registro);
+				fclose(registro);
 				matriz[pos.x-1][pos.y] = matriz[pos.x-1][pos.y] - 1;
 				pos.x--;
 				movimientosManual(matriz,pos);
@@ -331,6 +337,9 @@ int movimientosManual(int **matriz,p pos){
 				movimientosManual(matriz,pos);
 			}
 			else{
+				int E = 'E';
+				fputc(E,registro);
+				fclose(registro);
 				matriz[pos.x][pos.y+1] = matriz[pos.x][pos.y+1] - 1;
 				pos.y++;
 				movimientosManual(matriz,pos);
@@ -348,9 +357,13 @@ int movimientosManual(int **matriz,p pos){
 				movimientosManual(matriz,pos);
 			}
 			else{
+				int S = 'S';
+				fputc(S,registro);
+				fclose(registro);
 				matriz[pos.x + 1][pos.y] = matriz[pos.x + 1][pos.y] - 1;
 				pos.x++;
 				movimientosManual(matriz,pos);
+				
 			}
 			return 3;
 		break;
@@ -365,9 +378,13 @@ int movimientosManual(int **matriz,p pos){
 				movimientosManual(matriz,pos);
 			}
 			else{
+				int O = 'O';
+				fputc(O,registro);
+				fclose(registro);
 				matriz[pos.x][pos.y-1] = matriz[pos.x][pos.y-1] - 1;
 				pos.y--;
 				movimientosManual(matriz,pos);
+				
 			}
 			return 4;
 		break;
@@ -398,6 +415,9 @@ void Menu(){
 	}
 }
 int automatico(int **matriz,p pos){
+	FILE* Mov ;
+	Mov = fopen("MovAutomaticos.txt","a");
+
 	int canAbiertos = 0;
 	int canCerrados = 0;
 	posicion * abiertos = (posicion *)malloc(sizeof(posicion)*canAbiertos);
@@ -420,11 +440,15 @@ int automatico(int **matriz,p pos){
 		}else{
 			//movimientoes
 			//Arriba
+			matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
 			printf("el valor es arriba :%i\n",verificarArriba(pActual,matriz));
 			if(verificarArriba(pActual,matriz) == 1){
 				pSiguiente = Arriba(pActual);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
+					int N = 'N';
+					fputc(N,Mov);
+					fclose(Mov);
 				}else{
 					correlativo = correlativo - 1;
 				}
@@ -483,12 +507,13 @@ int automatico(int **matriz,p pos){
 
 
 }
+
 int main(){
 	int **matriz1 = leermatriz();
 	int **matriz2 = leermatriz();
 	p pos;
 	pos.x = 0;
-	pos.y = 1;
+	pos.y = 2;
 	correlativo = 0;
 	
 	int posx = 0;
@@ -511,6 +536,7 @@ int main(){
 			case 2:
 				system("clear");
 				movimientosManual(matriz2,pos);
+
 			break;
 			case 3:
 				Menu = 2;
