@@ -395,29 +395,8 @@ int movimientosManual(int **matriz,p pos){
 		break;
 	}
 }
-
-int posx = 0;
-int posy = 1;
-void Menu(){
-	int opcion;
-	printf(" opcion 1: ciudad oculta\n");
-	printf(" opcion 2: ciudad Normal\n");
-	scanf("%i",&opcion);
-
-
-
-	switch(opcion){
-		case 1:
-			//movimientosManual(matriz,pos);
-		break;
-		case 2:
-		break;
-	}
-}
 int automatico(int **matriz,p pos){
 	FILE* Mov ;
-	Mov = fopen("MovAutomaticos.txt","a");
-
 	int canAbiertos = 0;
 	int canCerrados = 0;
 	posicion * abiertos = (posicion *)malloc(sizeof(posicion)*canAbiertos);
@@ -428,6 +407,7 @@ int automatico(int **matriz,p pos){
 	abiertos = agregarEstado(abiertos, &canAbiertos, inicial);
 	printf("canAbiertos :%i\n",canAbiertos);
 	while(canAbiertos > 0){
+		Mov = fopen("MovAutomaticos.txt","a");
 		pActual = abiertos[0];
 		abiertos = sacarElemento(abiertos, &canAbiertos);
 		cerrados = agregarEstado(cerrados, &canCerrados,pActual);
@@ -446,9 +426,6 @@ int automatico(int **matriz,p pos){
 				pSiguiente = Arriba(pActual);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
-					int N = 'N';
-					fputc(N,Mov);
-					fclose(Mov);
 				}else{
 					correlativo = correlativo - 1;
 				}
