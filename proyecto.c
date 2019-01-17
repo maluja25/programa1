@@ -254,7 +254,7 @@ void columnas(int **PistasColumnas,int numero,int **matriz){
 }
 
 int **leermatriz(){
-  FILE* fp=fopen("matriz.txt","r");
+  FILE* fp=fopen("matriz1.txt","r");
    char linea[MAX_LIN], *p;
    int val;
    int **matriz= (int **) calloc(1000, sizeof(int *)) ;
@@ -290,10 +290,52 @@ int imprimirMatriz(int **matriz , int posx ,int posy){
 		printf("\n");
 	}
 }
-
+int verificarMovimiento(int **matriz,p pos){
+	int suma = 0;
+	if(pos.x == 0){
+		suma = suma;
+	}else{
+		if(matriz[pos.x-1][pos.y] > 0){
+			suma++;
+		}else{
+			suma = suma;
+		}
+	}
+	if(pos.y == m){
+		suma = suma;
+	}else{
+		if(matriz[pos.x][pos.y+1] > 0){
+			suma++;
+		}else{
+			suma = suma;
+    	}																		
+	}
+	if(pos.x == m){
+		suma = suma;
+	}else{
+		if(matriz[pos.x+1][pos.y] > 0){
+			suma++;
+		}else{
+			suma = suma;
+		}
+	}
+	if(pos.y == 0){
+		if(matriz[pos.x][pos.y-1] > 0){
+			suma++;
+		}else{
+			suma = suma;
+		}
+	}
+	printf("suma es : %i \n",suma);
+	if(suma > 0){
+		return 1;
+	}else{
+		return 0;
+	}
+}
 int movimientosManual(int **matriz,p pos){
 	FILE *registro;
- 	registro = fopen("registroLab.txt", "a");
+	registro = fopen("registroLab.txt", "a");
 	int n;
 	printf("posx%i , posy=%i\n",pos.x,pos.y);
 	imprimirMatriz(matriz,pos.x,pos.y);
@@ -420,9 +462,11 @@ int automatico(int **matriz,p pos){
 		}else{
 			//movimientoes
 			//Arriba
-			matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
 			printf("el valor es arriba :%i\n",verificarArriba(pActual,matriz));
 			if(verificarArriba(pActual,matriz) == 1){
+				if(matriz[pActual.y][pActual.x] > 0){
+					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
+				}
 				pSiguiente = Arriba(pActual);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
@@ -434,6 +478,9 @@ int automatico(int **matriz,p pos){
 			//Derecha
 			printf("el valor es derecha :%i\n",verificarDerecha(pActual,matriz));
 			if(verificarDerecha(pActual,matriz) == 1){
+				if(matriz[pActual.y][pActual.x] > 0){
+					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
+				}
 				pSiguiente = Derecha(pActual);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
@@ -445,6 +492,9 @@ int automatico(int **matriz,p pos){
 			printf("el valor es abajo :%i\n",verificarAbajo(pActual,matriz));
 			if(verificarAbajo(pActual,matriz) == 1){
 				pSiguiente = Abajo(pActual);
+				if(matriz[pActual.y][pActual.x] > 0){
+					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
+				}
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
 				}else{
@@ -456,6 +506,9 @@ int automatico(int **matriz,p pos){
 			printf("el valor es Izquierda :%i\n",verificarIzquierda(pActual,matriz));
 			if(verificarIzquierda(pActual,matriz) == 1){
 				pSiguiente = Izquierda(pActual);
+				if(matriz[pActual.y][pActual.x] > 0){
+					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
+				}
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
 				}else{
@@ -492,11 +545,15 @@ int main(){
 	pos.x = 0;
 	pos.y = 2;
 	correlativo = 0;
-	
+	FILE *registro;
+	registro = fopen("registroLab.txt", "w");
+	fclose(registro);
+
 	int posx = 0;
 	int posy = 2;
 	int Menu = 1;
 	int opcion;
+	int k = 1;
 	while(Menu = 1){
 		printf("Menu\n");
 		printf("1 modo automatico\n");
@@ -508,12 +565,20 @@ int main(){
 				system("clear");
 				printf("hola en esto momentos spiderman recorrera la ciudad\n");
 				automatico(matriz1,pos);
+				return 0;
 				Menu = 2;
 			break;
 			case 2:
 				system("clear");
-				movimientosManual(matriz2,pos);
-
+				while(k = 1){
+					if(verificarMovimiento(matriz2,pos) == 0){
+						k = 2;
+					}else{
+						k = 1;
+					}
+					printf("K es = %i\n",k);
+					movimientosManual(matriz2,pos);
+				}
 			break;
 			case 3:
 				Menu = 2;
