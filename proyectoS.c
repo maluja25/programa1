@@ -339,7 +339,7 @@ int verificarMovimiento(int **matriz,p pos){
 }
 int movimientosManual(int **matriz,p pos){
 	FILE *registro;
- 	registro = fopen("registroLab.txt", "a");
+	registro = fopen("registroLab.txt", "a");
 	int n;
 	printf("pos X = %i , pos Y = %i\n",pos.x,pos.y);
 	printf("\n");
@@ -442,10 +442,10 @@ int movimientosManual(int **matriz,p pos){
 		break;
 	}
 }
-
+<<<<<<< Updated upstream
 int automatico(int **matriz,p pos){
 	FILE* Mov ;
-
+=======
 
 int posx = 0;
 int posy = 1;
@@ -465,14 +465,18 @@ void Menu(){
 		break;
 	}
 }
-
+<<<<<<< Updated upstream
 int automatico(int **matriz,p pos){
+=======
+int main(){
+
 	int **matriz = leermatriz();
 	p pos;
 	pos.x = 0;
 	pos.y = 1;
 	correlativo = 0;
-
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 	int canAbiertos = 0;
 	int canCerrados = 0;
 	posicion * abiertos = (posicion *)malloc(sizeof(posicion)*canAbiertos);
@@ -567,49 +571,95 @@ int automatico(int **matriz,p pos){
 		printf("\n\n");
 	} 
 
+
+
+
 }
 
 int main(){
+	system("clear");
 	int **matriz1 = leermatriz();
 	int **matriz2 = leermatriz();
 	p pos;
 	pos.x = 0;
-	pos.y = 6;
+	pos.y = 1;
 	correlativo = 0;
 	
 	int posx = 0;
 	int posy = 2;
 	int Menu = 1;
 	int opcion;
-	int k = 1;
+	int proceso;
 	while(Menu = 1){
-		printf("Menu\n");
-		printf("1 modo automatico\n");
-		printf("2 modo manual\n");
+		printf("Menu de procesos:\n");
+		printf("1 generar mapa por entrada\n");
+		printf("2 generar el proceso inverso \n");
 		printf("3 salir\n");
-		scanf("%i",&opcion);
-		switch(opcion){
+		scanf("%i",&proceso);
+		switch(proceso){
 			case 1:
 				system("clear");
-				printf("hola en esto momentos spiderman recorrera la ciudad\n");
-				automatico(matriz1,pos);
-				return 0;
-				Menu = 2;
+				printf("Hola, en este momento se generará el mapa de la ciudad\n");
+				printf("Menu:\n");
+
+
+				//agregar matriz por entrada
+
+
+
+				printf("1 modo automatico\n");
+				printf("2 modo manual\n");
+				printf("3 salir\n");
+				scanf("%i",&opcion);
+				switch(opcion){
+					case 1:
+						system("clear");
+						printf("Spiderman recorrerá la ciudad\n");
+						automatico(matriz1,pos);
+						Menu = 2;
+					break;
+					case 2:
+						system("clear");
+						movimientosManual(matriz2,pos);
+					break;
+					case 3:
+						Menu = 2;
+					break;
+					default:
+						printf("No encontramos la opción ingresada.\n");
+    				break;
+				}
 			break;
 			case 2:
 				system("clear");
-				while(k = 1){
-					if(verificarMovimiento(matriz2,pos) == 0){
-						k = 2;
-					}else{
-						k = 1;
-					}
-					printf("K es = %i\n",k);
-					movimientosManual(matriz2,pos);
+				printf("Hola, en este momento se generará el mapa de la ciudad\n");
+				printf("Menu:\n");
+				printf("1 modo automatico\n");
+				printf("2 modo manual\n");
+				printf("3 salir\n");
+				scanf("%i",&opcion);
+				switch(opcion){
+					case 1:
+						system("clear");
+						printf("Spiderman recorrerá la ciudad\n");
+						automatico(matriz1,pos);
+						Menu = 2;
+					break;
+					case 2:
+						system("clear");
+						movimientosManual(matriz2,pos);
+					break;
+					case 3:
+						Menu = 2;
+					break;
+					default:
+						printf("No encontramos la opción ingresada.\n");
+    				break;
 				}
 			break;
 			case 3:
 				Menu = 2;
+				return 0;
 			break;
 		}
 	}
@@ -652,6 +702,5 @@ int main(){
 			printf("%i\n",PistasColumnas[k][i]);
 		}
 	} */ 	     	
-
 	return 0;
 }
