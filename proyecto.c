@@ -1,11 +1,18 @@
+//Librerias
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #define MAX_LIN 1000
 
+//Variables
+int n, m, correlativo;
 
+
+//Funciones y Estructuras
 typedef struct posicion posicion;
+typedef struct p p;
 
+/* Estructura para almacenar los datos respecto a la posicion de Spiderman*/
 struct posicion{
 	int x;
 	int y;
@@ -15,13 +22,19 @@ struct posicion{
 	int **ciudad;
 	int altura;
 };
+<<<<<<< Updated upstream
 typedef struct p p;
+=======
+
+/* Estructura para almacenar los datos respecto a la posicion de Spiderman al jugar de manera automática, trabaja con los datos
+x e y como coordenadas*/
+>>>>>>> Stashed changes
 struct p{
 	int x;
 	int y;
 };
 
-int n,m;
+
 int verificarArriba(posicion estado,int **matriz);
 int verificarDerecha(posicion estado,int **matriz);
 int verificarAbajo(posicion estado,int **matriz);
@@ -31,7 +44,17 @@ posicion Derecha(posicion estado,int **nuevaCiudad);
 posicion Izquierda(posicion estado,int **nuevaCiudad);
 posicion Abajo(posicion estado,int **nuevaCiudad);
 
+<<<<<<< Updated upstream
 int correlativo;
+=======
+
+/*Entrada: recibe los valores que funcionan como las coordenadas de la posisción, una variable del tipo entero para guardar el 
+           estado anterior, un puntero a entero que almacena las transiciones realizadas, la matriz de la ciudad y la altura 
+           correspondiente de cada edificio
+  Salida:  un nuevo estado.
+  Objetivo: Generar un nuevo estado de trabajo para hacer el problema mas próximo a nuestras herramientas
+            */
+>>>>>>> Stashed changes
 posicion CrearEstado(int x, int y, int anterior, char * t,int **ciudad,int altura){
 	posicion nuevoEstado;
 	nuevoEstado.x = x;
@@ -595,26 +618,39 @@ int automatico(int **matriz,p pos){
 }
 
 int main(){
+	system("clear");
 	int **matriz1 = leermatriz();
 	int **matriz2 = leermatriz();
 	p pos;
 	pos.x = 5;
 	pos.y = 0;
 	correlativo = 0;
+<<<<<<< Updated upstream
+=======
+	FILE *registro;
+	registro = fopen("registroLab.txt", "w");
+	fclose(registro);
+	pos.x = 5;
+	pos.y = 0;
+	correlativo = 0;
+>>>>>>> Stashed changes
 	int posx = 0;
 	int posy = 5;
 	int Menu = 1;
 	int opcion;
+	int proceso;
 	int k = 1;
 	while(Menu = 1){
-		printf("Menu\n");
-		printf("1 modo automatico\n");
-		printf("2 modo manual\n");
+		printf("Menu de procesos:\n");
+		printf("1 generar mapa por entrada\n");
+		printf("2 generar el proceso inverso \n");
 		printf("3 salir\n");
-		scanf("%i",&opcion);
-		switch(opcion){
+		proceso = getchar();
+		proceso = proceso%48;
+		switch(proceso){
 			case 1:
 				system("clear");
+<<<<<<< Updated upstream
 				printf("hola en esto momentos spiderman recorrera la ciudad\n");
 				automatico(matriz1,pos);
 				Menu = 2;
@@ -622,11 +658,72 @@ int main(){
 			case 2:
 				system("clear");
 				movimientosManual(matriz2,pos);
+=======
+				printf("Hola, en este momento se generará el mapa de la ciudad\n");
+				printf("Menu:\n");
+
+
+				//agregar matriz por entrada
+
+
+
+				printf("1 modo automatico\n");
+				printf("2 modo manual\n");
+				printf("3 salir\n");
+				scanf("%i",&opcion);
+				switch(opcion){
+					case 1:
+						system("clear");
+						printf("Spiderman recorrerá la ciudad\n");
+//						automatico(matriz1,pos);
+						Menu = 2;
+					break;
+					case 2:
+						system("clear");
+//						movimientosManual(matriz2,pos);
+					break;
+					case 3:
+						Menu = 2;
+					break;
+					default:
+    				break;
+				}
+			break;
+			case 2:
+				system("clear");
+				printf("Hola, en este momento se generará el mapa de la ciudad\n");
+				printf("Menu:\n");
+				printf("1 modo automatico\n");
+				printf("2 modo manual\n");
+				printf("3 salir\n");
+				scanf("%i",&opcion);
+				switch(opcion){
+					case 1:
+						system("clear");
+						printf("Spiderman recorrerá la ciudad\n");
+						automatico(matriz1,pos);
+						Menu = 2;
+					break;
+					case 2:
+						system("clear");
+						movimientosManual(matriz2,pos);
+					break;
+					case 3:
+						Menu = 2;
+					break;
+					default:
+    				break;
+				}
+>>>>>>> Stashed changes
 			break;
 			case 3:
 				Menu = 2;
+				return 0;
 			break;
+			default: 
+				Menu = 2;
 		}
+<<<<<<< Updated upstream
 	}
 	//imprimirMatriz(matriz,pos.x,pos.y);
 	//movimientosManual(matriz,pos);
@@ -668,5 +765,8 @@ int main(){
 		}
 	} */ 	     	
 
+=======
+	}	     	
+>>>>>>> Stashed changes
 	return 0;
 }
