@@ -102,7 +102,7 @@ posicion Arriba(posicion estado,int **nuevaCiudad){
 }
 
 int verificarDerecha(posicion estado,int **matriz){
-	if(estado.x == m-1){
+	if(estado.x == m){
 		return 0;
 	}
 	if (estado.x < m)
@@ -121,7 +121,7 @@ posicion Derecha(posicion estado,int **nuevaCiudad){
 	return CrearEstado(estado.x+1,estado.y,estado.idEstado,"derecha",nuevaCiudad,nuevaCiudad[estado.y][estado.x]);
 }
 int verificarAbajo(posicion estado,int **matriz){
-	if(estado.y == m-1){
+	if(estado.y == m){
 		return 0;
 	}
 	if (estado.y < m)
@@ -281,10 +281,24 @@ int **leermatriz(){
     }
   	return matriz;
 }
-int imprimirMatriz(int **matriz , int posx ,int posy){
-	for (int i = 0; i < m; ++i)
+int imprimirMatriz1(int **matriz , int posx ,int posy){
+	for (int i = 0; i < m+1; ++i)
 	{
-		for (int j = 0; j < m; ++j)
+		for (int j = 0; j < m+1; ++j)
+		{
+			if(i == posy && j == posx){
+				printf("X ");
+			}else{
+				printf("%i ",matriz[i][j]);
+			}
+		}
+		printf("\n");
+	}
+}
+int imprimirMatriz2(int **matriz , int posx ,int posy){
+	for (int i = 0; i <= m; ++i)
+	{
+		for (int j = 0; j <= m; ++j)
 		{
 			if(i == posy && j == posx){
 				printf("X ");
@@ -297,35 +311,35 @@ int imprimirMatriz(int **matriz , int posx ,int posy){
 }
 int verificarMovimiento(int **matriz,p pos){
 	int suma = 0;
-	if(pos.x == 0){
+	if(pos.y == 0){
 		suma = suma;
 	}else{
-		if(matriz[pos.x-1][pos.y] > 0){
+		if(matriz[pos.y-1][pos.x] > 0){
 			suma++;
 		}else{
 			suma = suma;
 		}
 	}
-	if(pos.y == m){
+	if(pos.x == m){
 		suma = suma;
 	}else{
-		if(matriz[pos.x][pos.y+1] > 0){
+		if(matriz[pos.y][pos.x+1] > 0){
 			suma++;
 		}else{
 			suma = suma;
     	}																		
 	}
-	if(pos.x == m){
+	if(pos.y == m){
 		suma = suma;
 	}else{
-		if(matriz[pos.x+1][pos.y] > 0){
+		if(matriz[pos.y+1][pos.x] > 0){
 			suma++;
 		}else{
 			suma = suma;
 		}
 	}
-	if(pos.y == 0){
-		if(matriz[pos.x][pos.y-1] > 0){
+	if(pos.x == 0){
+		if(matriz[pos.y][pos.x-1] > 0){
 			suma++;
 		}else{
 			suma = suma;
@@ -344,7 +358,7 @@ int movimientosManual(int **matriz,p pos){
 	int n;
 	printf("pos X = %i , pos Y = %i\n",pos.x,pos.y);
 	printf("\n");
-	imprimirMatriz(matriz,pos.x,pos.y);
+	imprimirMatriz1(matriz,pos.x,pos.y);
 	printf("\n\n\n\n\n\n");
 	printf("1 NORTE\n");
 	printf("2 ESTE ->\n");
@@ -447,13 +461,13 @@ int **copiarMatriz(int **matriz){
 	int **nuevaMatriz;
 	nuevaMatriz = (int **)malloc(sizeof(int * )*m);
 	int i , j ;
-	for (i = 0; i < m; ++i)
+	for (i = 0; i <= m; ++i)
 	{
 		nuevaMatriz[i] = ( int * )malloc(sizeof(int)*m);
 	}
-	for (i = 0; i < m; ++i)
+	for (i = 0; i <= m; ++i)
 	{
-		for ( j = 0; j < m; ++j)
+		for ( j = 0; j <= m; ++j)
 		{
 			nuevaMatriz[i][j] = matriz[i][j]; 
 		}
@@ -478,7 +492,7 @@ int automatico(int **matriz,p pos){
 		cerrados = agregarEstado(cerrados, &canCerrados,pActual);
 		pActual.ciudad[pActual.y][pActual.x] = pActual.ciudad[pActual.y][pActual.x] - 1;
 		printf("X:%i,Y:%i,idEstado:%i,EstadoAnterior:%i,movimiento:%s,AE:%i\n",pActual.x,pActual.y,pActual.idEstado,pActual.estadoAnterior,pActual.movimiento,pActual.ciudad[pActual.y][pActual.x]);
-		imprimirMatriz(pActual.ciudad,pActual.x,pActual.y);
+		imprimirMatriz2(pActual.ciudad,pActual.x,pActual.y);
 		printf("esFinal %i\n",esFinal(pActual,pActual.ciudad));
 		printf("la canCerrados es %i\n",canCerrados);
 		printf("la canAbiertos es %i\n",canAbiertos);
