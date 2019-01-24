@@ -3,10 +3,6 @@
 #include <string.h>
 #define MAX_LIN 1000
 
-int leer_entrada(){
-	FILE* fp=fopen("Entrada.in.txt","r");
-	
-}
 
 typedef struct posicion posicion;
 
@@ -16,8 +12,9 @@ struct posicion{
 	int idEstado;
 	int estadoAnterior;
 	char * movimiento;
+	int **ciudad;
+	int altura;
 };
-
 typedef struct p p;
 struct p{
 	int x;
@@ -29,19 +26,21 @@ int verificarArriba(posicion estado,int **matriz);
 int verificarDerecha(posicion estado,int **matriz);
 int verificarAbajo(posicion estado,int **matriz);
 int verificarIzquierda(posicion estado,int **matriz);
-posicion Arriba(posicion estado);
-posicion Derecha(posicion estado);
-posicion Izquierda(posicion estado);
-posicion Abajo(posicion estado);
+posicion Arriba(posicion estado,int **nuevaCiudad);
+posicion Derecha(posicion estado,int **nuevaCiudad);
+posicion Izquierda(posicion estado,int **nuevaCiudad);
+posicion Abajo(posicion estado,int **nuevaCiudad);
 
 int correlativo;
-posicion CrearEstado(int x, int y, int anterior, char * t){
+posicion CrearEstado(int x, int y, int anterior, char * t,int **ciudad,int altura){
 	posicion nuevoEstado;
 	nuevoEstado.x = x;
 	nuevoEstado.y = y;
 	nuevoEstado.idEstado = correlativo;
 	nuevoEstado.estadoAnterior = anterior;
 	nuevoEstado.movimiento = t;
+	nuevoEstado.ciudad = ciudad;
+	nuevoEstado.altura = altura;
 	correlativo = correlativo + 1;
 	return nuevoEstado;
 }
@@ -98,11 +97,12 @@ int verificarArriba(posicion estado,int **matriz){
 	}
 		
 }
-posicion Arriba(posicion estado){
-	return CrearEstado(estado.x,estado.y-1,estado.idEstado,"arriba");
+posicion Arriba(posicion estado,int **nuevaCiudad){
+	return CrearEstado(estado.x,estado.y-1,estado.idEstado,"arriba",nuevaCiudad,nuevaCiudad[estado.y][estado.x]);
 }
+
 int verificarDerecha(posicion estado,int **matriz){
-	if(estado.x == m){
+	if(estado.x == m-1){
 		return 0;
 	}
 	if (estado.x < m)
@@ -117,11 +117,11 @@ int verificarDerecha(posicion estado,int **matriz){
 	}
 }
 
-posicion Derecha(posicion estado){
-	return CrearEstado(estado.x+1,estado.y,estado.idEstado,"derecha");
+posicion Derecha(posicion estado,int **nuevaCiudad){
+	return CrearEstado(estado.x+1,estado.y,estado.idEstado,"derecha",nuevaCiudad,nuevaCiudad[estado.y][estado.x]);
 }
 int verificarAbajo(posicion estado,int **matriz){
-	if(estado.y == m){
+	if(estado.y == m-1){
 		return 0;
 	}
 	if (estado.y < m)
@@ -135,8 +135,8 @@ int verificarAbajo(posicion estado,int **matriz){
 		}
 	}
 }
-posicion Abajo(posicion estado){
-	return CrearEstado(estado.x,estado.y+1,estado.idEstado,"abajo");
+posicion Abajo(posicion estado,int **nuevaCiudad){
+	return CrearEstado(estado.x,estado.y+1,estado.idEstado,"abajo",nuevaCiudad,nuevaCiudad[estado.y][estado.x]);
 }
 int verificarIzquierda(posicion estado,int **matriz){
 	if(estado.x == 0){
@@ -153,12 +153,12 @@ int verificarIzquierda(posicion estado,int **matriz){
 		}	
 	}
 }
-posicion Izquierda(posicion estado){
-	return CrearEstado(estado.x-1,estado.y,estado.idEstado,"Izquierda");
+posicion Izquierda(posicion estado,int **nuevaCiudad){
+	return CrearEstado(estado.x-1,estado.y,estado.idEstado,"Izquierda",nuevaCiudad,nuevaCiudad[estado.y][estado.x]);
 }
 int estaEstado(posicion * lista, int elementos, posicion estado){
 	for (int i = 0; i < elementos; ++i){
-		if((lista[i].x == estado.x) && (lista[i].y == estado.y))
+		if((lista[i].x == estado.x) && (lista[i].y == estado.y) && (lista[i].ciudad[estado.y][estado.x] == estado.ciudad[estado.y][estado.x]) && lista[i].idEstado == estado.idEstado)
 			return 1;
 	}return 0;
 }
@@ -167,10 +167,11 @@ void mostrarSolucion(posicion * lista, int ultimo){
 	while(lista[ultimo].idEstado != 0){
 		printf("%s\n", lista[ultimo].movimiento);
 		ultimo = lista[ultimo].estadoAnterior;
+		printf("el valor de ultimo es :%i\n",ultimo);  
 	}
 }
 void imprimirEstado(posicion estado){
-	printf("X:%i,Y:%i,idEstado:%i,EstadoAnterior:%i,movimiento:%s\n",estado.x,estado.y,estado.idEstado,estado.estadoAnterior,estado.movimiento);
+	printf("X:%i,Y:%i,idEstado:%i,EstadoAnterior:%i,movimiento:%s,AE:%i\n",estado.x,estado.y,estado.idEstado,estado.estadoAnterior,estado.movimiento,estado.ciudad[estado.y][estado.x]);
 }
 int numero;
 
@@ -258,7 +259,7 @@ void columnas(int **PistasColumnas,int numero,int **matriz){
 }
 
 int **leermatriz(){
-  FILE* fp=fopen("matriz1.txt","r");
+  FILE* fp=fopen("matriz.txt","r");
    char linea[MAX_LIN], *p;
    int val;
    int **matriz= (int **) calloc(1000, sizeof(int *)) ;
@@ -281,11 +282,11 @@ int **leermatriz(){
   	return matriz;
 }
 int imprimirMatriz(int **matriz , int posx ,int posy){
-	for (int i = 0; i <= m; ++i)
+	for (int i = 0; i < m; ++i)
 	{
-		for (int j = 0; j <= m; ++j)
+		for (int j = 0; j < m; ++j)
 		{
-			if(i == posx && j == posy){
+			if(i == posy && j == posx){
 				printf("X ");
 			}else{
 				printf("%i ",matriz[i][j]);
@@ -345,21 +346,21 @@ int movimientosManual(int **matriz,p pos){
 	printf("\n");
 	imprimirMatriz(matriz,pos.x,pos.y);
 	printf("\n\n\n\n\n\n");
-	printf("1 Arriba\n");
-	printf("2 Derecha\n");
-	printf("3 Abajo\n");
-	printf("4 Izquierda\n");
+	printf("1 NORTE\n");
+	printf("2 ESTE ->\n");
+	printf("3 SUR \n");
+	printf("4 OESTE <-\n");
 	scanf("%i",&n);
 	printf("el n es :%i\n",n);
 	switch(n){
 		//arriba
 		case 1:
 			system("clear");
-			if(pos.x == 0 ){
+			if(pos.y == 0 ){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
-			if(matriz[pos.x-1][pos.y] == 0){
+			if(matriz[pos.y-1][pos.x] == 0){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
@@ -367,19 +368,19 @@ int movimientosManual(int **matriz,p pos){
 				int N = 'N';
 				fputc(N,registro);
 				fclose(registro);
-				matriz[pos.x-1][pos.y] = matriz[pos.x-1][pos.y] - 1;
-				pos.x--;
+				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
+				pos.y--;
 				movimientosManual(matriz,pos);
 			}
 			return 1;
 		break;
 		case 2:
 			system("clear");
-			if(pos.y == m ){
+			if(pos.x == m ){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
-			if(matriz[pos.x][pos.y+1] == 0){
+			if(matriz[pos.y][pos.x+1] == 0){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
@@ -387,19 +388,19 @@ int movimientosManual(int **matriz,p pos){
 				int E = 'E';
 				fputc(E,registro);
 				fclose(registro);
-				matriz[pos.x][pos.y+1] = matriz[pos.x][pos.y+1] - 1;
-				pos.y++;
+				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
+				pos.x++;
 				movimientosManual(matriz,pos);
 			}
 			return 2;
 		break;
 		case 3:
 			system("clear");
-			if(pos.x == m ){
+			if(pos.y == m ){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
-			if(matriz[pos.x+1][pos.y] == 0){
+			if(matriz[pos.y+1][pos.x] == 0){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
@@ -407,8 +408,8 @@ int movimientosManual(int **matriz,p pos){
 				int S = 'S';
 				fputc(S,registro);
 				fclose(registro);
-				matriz[pos.x + 1][pos.y] = matriz[pos.x + 1][pos.y] - 1;
-				pos.x++;
+				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
+				pos.y++;
 				movimientosManual(matriz,pos);
 				
 			}
@@ -416,11 +417,11 @@ int movimientosManual(int **matriz,p pos){
 		break;
 		case 4:
 			system("clear");
-			if(pos.y == 0 ){
+			if(pos.x == 0 ){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
-			if(matriz[pos.x][pos.y-1] == 0){
+			if(matriz[pos.y][pos.x-1] == 0){
 				printf("MOVIMIENTO INVALIDO\n");
 				movimientosManual(matriz,pos);
 			}
@@ -428,8 +429,8 @@ int movimientosManual(int **matriz,p pos){
 				int O = 'O';
 				fputc(O,registro);
 				fclose(registro);
-				matriz[pos.x][pos.y-1] = matriz[pos.x][pos.y-1] - 1;
-				pos.y--;
+				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
+				pos.x--;
 				movimientosManual(matriz,pos);
 				
 			}
@@ -442,130 +443,140 @@ int movimientosManual(int **matriz,p pos){
 		break;
 	}
 }
-
-int automatico(int **matriz,p pos){
-	FILE* Mov ;
-
-
-int posx = 0;
-int posy = 1;
-void Menu(){
-	int opcion;
-	printf(" opcion 1: ciudad oculta\n");
-	printf(" opcion 2: ciudad Normal\n");
-	scanf("%i",&opcion);
-
-
-
-	switch(opcion){
-		case 1:
-			//movimientosManual(matriz,pos);
-		break;
-		case 2:
-		break;
+int **copiarMatriz(int **matriz){
+	int **nuevaMatriz;
+	nuevaMatriz = (int **)malloc(sizeof(int * )*m);
+	int i , j ;
+	for (i = 0; i < m; ++i)
+	{
+		nuevaMatriz[i] = ( int * )malloc(sizeof(int)*m);
 	}
+	for (i = 0; i < m; ++i)
+	{
+		for ( j = 0; j < m; ++j)
+		{
+			nuevaMatriz[i][j] = matriz[i][j]; 
+		}
+	}
+	return nuevaMatriz;
 }
-
 int automatico(int **matriz,p pos){
-	int **matriz = leermatriz();
-	p pos;
-	pos.x = 0;
-	pos.y = 1;
 	correlativo = 0;
-
 	int canAbiertos = 0;
 	int canCerrados = 0;
+	int **Nciudad;
 	posicion * abiertos = (posicion *)malloc(sizeof(posicion)*canAbiertos);
 	posicion * cerrados = (posicion *)malloc(sizeof(posicion)*canCerrados);
 	posicion estado;
-	posicion inicial = CrearEstado(pos.y,pos.x, correlativo,"X");
-	posicion pActual,pSiguiente;
+	posicion inicial = CrearEstado(pos.x,pos.y, correlativo,"X",matriz,matriz[pos.y][pos.x]);
+	posicion pActual,pSiguiente,pAnterior;
 	abiertos = agregarEstado(abiertos, &canAbiertos, inicial);
 	printf("canAbiertos :%i\n",canAbiertos);
 	while(canAbiertos > 0){
-		Mov = fopen("MovAutomaticos.txt","a");
 		pActual = abiertos[0];
 		abiertos = sacarElemento(abiertos, &canAbiertos);
 		cerrados = agregarEstado(cerrados, &canCerrados,pActual);
-		imprimirMatriz(matriz,pActual.y,pActual.x);
-		printf("esFinal %i\n",esFinal(pActual,matriz));
-		if(esFinal(pActual,matriz) == 1){
+		pActual.ciudad[pActual.y][pActual.x] = pActual.ciudad[pActual.y][pActual.x] - 1;
+		printf("X:%i,Y:%i,idEstado:%i,EstadoAnterior:%i,movimiento:%s,AE:%i\n",pActual.x,pActual.y,pActual.idEstado,pActual.estadoAnterior,pActual.movimiento,pActual.ciudad[pActual.y][pActual.x]);
+		imprimirMatriz(pActual.ciudad,pActual.x,pActual.y);
+		printf("esFinal %i\n",esFinal(pActual,pActual.ciudad));
+		printf("la canCerrados es %i\n",canCerrados);
+		printf("la canAbiertos es %i\n",canAbiertos);
+		if(esFinal(pActual,pActual.ciudad) == 1){
 			printf("llegue a la solucion\n");
 			mostrarSolucion(cerrados,canCerrados-1);
 			return 0;
 		}else{
 			//movimientoes
 			//Arriba
-			printf("el valor es arriba :%i\n",verificarArriba(pActual,matriz));
-			if(verificarArriba(pActual,matriz) == 1){
-				if(matriz[pActual.y][pActual.x] > 0){
-					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
-				}
-				pSiguiente = Arriba(pActual);
+			
+			printf("el valor es arriba :%i\n",verificarArriba(pActual,pActual.ciudad));
+			if(verificarArriba(pActual,pActual.ciudad) == 1){
+				Nciudad = copiarMatriz(pActual.ciudad);
+				/*
+				if(Nciudad[pActual.y][pActual.x] > 0){
+					Nciudad[pActual.y][pActual.x] = Nciudad[pActual.y][pActual.x] - 1;
+				}*/
+				pAnterior = pActual;
+				pSiguiente = Arriba(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
+					correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
-
 			}
 			//Derecha
-			printf("el valor es derecha :%i\n",verificarDerecha(pActual,matriz));
-			if(verificarDerecha(pActual,matriz) == 1){
-				if(matriz[pActual.y][pActual.x] > 0){
-					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
-				}
-				pSiguiente = Derecha(pActual);
+			printf("el valor es derecha :%i\n",verificarDerecha(pActual,pActual.ciudad));
+			if(verificarDerecha(pActual,pActual.ciudad) == 1){
+				Nciudad = copiarMatriz(pActual.ciudad);
+				pAnterior = pActual;
+				/*
+				if(Nciudad[pActual.y][pActual.x] > 0){
+					Nciudad[pActual.y][pActual.x] = Nciudad[pActual.y][pActual.x] - 1;
+				}*/
+				pSiguiente = Derecha(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
+					correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
 			}
 			//Abajo
-			printf("el valor es abajo :%i\n",verificarAbajo(pActual,matriz));
-			if(verificarAbajo(pActual,matriz) == 1){
-				pSiguiente = Abajo(pActual);
-				if(matriz[pActual.y][pActual.x] > 0){
-					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
-				}
+			printf("el valor es abajo :%i\n",verificarAbajo(pActual,pActual.ciudad));
+			if(verificarAbajo(pActual,pActual.ciudad) == 1){
+				Nciudad = copiarMatriz(pActual.ciudad);
+				pAnterior = pActual;
+				/*
+				if(Nciudad[pActual.y][pActual.x] > 0){
+					Nciudad[pActual.y][pActual.x] = Nciudad[pActual.y][pActual.x] - 1;
+				}*/
+				pSiguiente = Abajo(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
+					correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
 
 			}
 			//Izquierda
-			printf("el valor es Izquierda :%i\n",verificarIzquierda(pActual,matriz));
-			if(verificarIzquierda(pActual,matriz) == 1){
-				pSiguiente = Izquierda(pActual);
-				if(matriz[pActual.y][pActual.x] > 0){
-					matriz[pActual.y][pActual.x] = matriz[pActual.y][pActual.x] - 1;
-				}
+			printf("el valor es Izquierda :%i\n",verificarIzquierda(pActual,pActual.ciudad));
+			if(verificarIzquierda(pActual,pActual.ciudad) == 1){
+				Nciudad = copiarMatriz(pActual.ciudad);
+				pAnterior = pActual;
+				/*
+				if(Nciudad[pActual.y][pActual.x] > 0){
+					Nciudad[pActual.y][pActual.x] = Nciudad[pActual.y][pActual.x] - 1;
+				}*/
+				pSiguiente = Izquierda(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
+					correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
-
 			}
 
 		}
-		printf("ABIERTOS:");
-		for (int i = 0; i < canAbiertos; ++i)
-		{
-			imprimirEstado(abiertos[i]);
-		}
+		
+	}
+	/*
+	printf("ABIERTOS:");
+	for (int i = 0; i < canAbiertos; ++i)
+	{
+		imprimirEstado(abiertos[i]);
+	}
 
 
-		printf("\nCERRADOS:");
-		for (int i = 0; i < canCerrados; ++i)
-		{
-			imprimirEstado(cerrados[i]);
-		}
-		printf("\n\n");
-	} 
+	printf("\nCERRADOS:");
+	for (int i = 0; i < canCerrados; ++i)
+	{
+		imprimirEstado(cerrados[i]);
+	}
+	printf("\n\n");
+	*/
 
 }
 
@@ -573,12 +584,11 @@ int main(){
 	int **matriz1 = leermatriz();
 	int **matriz2 = leermatriz();
 	p pos;
-	pos.x = 0;
-	pos.y = 6;
+	pos.x = 5;
+	pos.y = 0;
 	correlativo = 0;
-	
 	int posx = 0;
-	int posy = 2;
+	int posy = 5;
 	int Menu = 1;
 	int opcion;
 	int k = 1;
@@ -593,20 +603,11 @@ int main(){
 				system("clear");
 				printf("hola en esto momentos spiderman recorrera la ciudad\n");
 				automatico(matriz1,pos);
-				return 0;
 				Menu = 2;
 			break;
 			case 2:
 				system("clear");
-				while(k = 1){
-					if(verificarMovimiento(matriz2,pos) == 0){
-						k = 2;
-					}else{
-						k = 1;
-					}
-					printf("K es = %i\n",k);
-					movimientosManual(matriz2,pos);
-				}
+				movimientosManual(matriz2,pos);
 			break;
 			case 3:
 				Menu = 2;
