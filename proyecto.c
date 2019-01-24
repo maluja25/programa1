@@ -22,13 +22,13 @@ struct posicion{
 	int **ciudad;
 	int altura;
 };
-<<<<<<< Updated upstream
+
 typedef struct p p;
-=======
+
 
 /* Estructura para almacenar los datos respecto a la posicion de Spiderman al jugar de manera automática, trabaja con los datos
 x e y como coordenadas*/
->>>>>>> Stashed changes
+
 struct p{
 	int x;
 	int y;
@@ -44,9 +44,9 @@ posicion Derecha(posicion estado,int **nuevaCiudad);
 posicion Izquierda(posicion estado,int **nuevaCiudad);
 posicion Abajo(posicion estado,int **nuevaCiudad);
 
-<<<<<<< Updated upstream
+
 int correlativo;
-=======
+
 
 /*Entrada: recibe los valores que funcionan como las coordenadas de la posisción, una variable del tipo entero para guardar el 
            estado anterior, un puntero a entero que almacena las transiciones realizadas, la matriz de la ciudad y la altura 
@@ -54,7 +54,7 @@ int correlativo;
   Salida:  un nuevo estado.
   Objetivo: Generar un nuevo estado de trabajo para hacer el problema mas próximo a nuestras herramientas
             */
->>>>>>> Stashed changes
+
 posicion CrearEstado(int x, int y, int anterior, char * t,int **ciudad,int altura){
 	posicion nuevoEstado;
 	nuevoEstado.x = x;
@@ -74,6 +74,16 @@ posicion * agregarEstado(posicion * lista, int * elementos, posicion estado){
 	}
 	nuevaLista[*elementos] = estado;
 	*elementos = *elementos+1;
+	free(lista);
+	return nuevaLista;
+}
+posicion * agregarEstado1(posicion * lista, int  elementos, posicion estado){
+	posicion * nuevaLista = (posicion *)malloc(sizeof(posicion)*(elementos+1));
+	for (int i = 0; i < elementos; ++i){
+		nuevaLista[i] = lista[i];
+	}
+	nuevaLista[elementos] = estado;
+	printf("la cantidad de elementos es :%i\n",elementos);
 	free(lista);
 	return nuevaLista;
 }
@@ -185,17 +195,25 @@ int estaEstado(posicion * lista, int elementos, posicion estado){
 			return 1;
 	}return 0;
 }
-void mostrarSolucion(posicion * lista, int ultimo){
-	printf("Los pasos son, del ultimo al primero: \n");
-	while(lista[ultimo].idEstado != 0){
-		printf("%s\n", lista[ultimo].movimiento);
-		ultimo = lista[ultimo].estadoAnterior;
-		printf("el valor de ultimo es :%i\n",ultimo);  
-	}
-}
 void imprimirEstado(posicion estado){
 	printf("X:%i,Y:%i,idEstado:%i,EstadoAnterior:%i,movimiento:%s,AE:%i\n",estado.x,estado.y,estado.idEstado,estado.estadoAnterior,estado.movimiento,estado.ciudad[estado.y][estado.x]);
 }
+int mostrarSolucion(posicion * lista, int ultimo){
+	printf("Los pasos son, del ultimo al primero: \n");
+	for (int i = 0; i < ultimo; ++i)
+	{
+		printf("id:%i ea:%i \n",lista[i].idEstado,lista[i].estadoAnterior);
+	}
+	while(lista[ultimo].idEstado != 0){
+		printf("%s\n", lista[ultimo].movimiento);
+		printf("id:%i ea:%i \n",lista[ultimo].idEstado,lista[ultimo].estadoAnterior);
+		//printf("estado %i\t",lista[ultimo].idEstado);
+		//printf("vino del estado %i\n",lista[ultimo].estadoAnterior);
+		ultimo = lista[ultimo].estadoAnterior;
+		//printf("el valor de ultimo es :%i\n",ultimo);  
+	}
+}
+
 int numero;
 
 int mf,nf;
@@ -282,7 +300,7 @@ void columnas(int **PistasColumnas,int numero,int **matriz){
 }
 
 int **leermatriz(){
-  FILE* fp=fopen("matriz.txt","r");
+  FILE* fp=fopen("matriz1.txt","r");
    char linea[MAX_LIN], *p;
    int val;
    int **matriz= (int **) calloc(1000, sizeof(int *)) ;
@@ -319,9 +337,9 @@ int imprimirMatriz1(int **matriz , int posx ,int posy){
 	}
 }
 int imprimirMatriz2(int **matriz , int posx ,int posy){
-	for (int i = 0; i <= m; ++i)
+	for (int i = 0; i < m+1; ++i)
 	{
-		for (int j = 0; j <= m; ++j)
+		for (int j = 0; j < m+1; ++j)
 		{
 			if(i == posy && j == posx){
 				printf("X ");
@@ -482,15 +500,15 @@ int movimientosManual(int **matriz,p pos){
 }
 int **copiarMatriz(int **matriz){
 	int **nuevaMatriz;
-	nuevaMatriz = (int **)malloc(sizeof(int * )*m);
+	nuevaMatriz = (int **)malloc(sizeof(int * )*m+1);
 	int i , j ;
-	for (i = 0; i <= m; ++i)
+	for (i = 0; i < m+1; ++i)
 	{
-		nuevaMatriz[i] = ( int * )malloc(sizeof(int)*m);
+		nuevaMatriz[i] = ( int * )malloc(sizeof(int)*m+1);
 	}
-	for (i = 0; i <= m; ++i)
+	for (i = 0; i < m+1; ++i)
 	{
-		for ( j = 0; j <= m; ++j)
+		for ( j = 0; j < m+1; ++j)
 		{
 			nuevaMatriz[i][j] = matriz[i][j]; 
 		}
@@ -504,6 +522,7 @@ int automatico(int **matriz,p pos){
 	int **Nciudad;
 	posicion * abiertos = (posicion *)malloc(sizeof(posicion)*canAbiertos);
 	posicion * cerrados = (posicion *)malloc(sizeof(posicion)*canCerrados);
+	posicion * todosEstados =  (posicion *)malloc(sizeof(posicion)*correlativo);
 	posicion estado;
 	posicion inicial = CrearEstado(pos.x,pos.y, correlativo,"X",matriz,matriz[pos.y][pos.x]);
 	posicion pActual,pSiguiente,pAnterior;
@@ -513,21 +532,22 @@ int automatico(int **matriz,p pos){
 		pActual = abiertos[0];
 		abiertos = sacarElemento(abiertos, &canAbiertos);
 		cerrados = agregarEstado(cerrados, &canCerrados,pActual);
+		todosEstados = agregarEstado1(todosEstados,correlativo,pActual);
 		pActual.ciudad[pActual.y][pActual.x] = pActual.ciudad[pActual.y][pActual.x] - 1;
 		printf("X:%i,Y:%i,idEstado:%i,EstadoAnterior:%i,movimiento:%s,AE:%i\n",pActual.x,pActual.y,pActual.idEstado,pActual.estadoAnterior,pActual.movimiento,pActual.ciudad[pActual.y][pActual.x]);
+		//system("clear");
 		imprimirMatriz2(pActual.ciudad,pActual.x,pActual.y);
 		printf("esFinal %i\n",esFinal(pActual,pActual.ciudad));
 		printf("la canCerrados es %i\n",canCerrados);
 		printf("la canAbiertos es %i\n",canAbiertos);
 		if(esFinal(pActual,pActual.ciudad) == 1){
 			printf("llegue a la solucion\n");
-			mostrarSolucion(cerrados,canCerrados-1);
+			mostrarSolucion(todosEstados,correlativo);
 			return 0;
 		}else{
 			//movimientoes
 			//Arriba
-			
-			printf("el valor es arriba :%i\n",verificarArriba(pActual,pActual.ciudad));
+			//printf("el valor es arriba :%i\n",verificarArriba(pActual,pActual.ciudad));
 			if(verificarArriba(pActual,pActual.ciudad) == 1){
 				Nciudad = copiarMatriz(pActual.ciudad);
 				/*
@@ -538,13 +558,13 @@ int automatico(int **matriz,p pos){
 				pSiguiente = Arriba(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
-					correlativo = correlativo + 1;
+					//correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
 			}
 			//Derecha
-			printf("el valor es derecha :%i\n",verificarDerecha(pActual,pActual.ciudad));
+			//printf("el valor es derecha :%i\n",verificarDerecha(pActual,pActual.ciudad));
 			if(verificarDerecha(pActual,pActual.ciudad) == 1){
 				Nciudad = copiarMatriz(pActual.ciudad);
 				pAnterior = pActual;
@@ -555,13 +575,13 @@ int automatico(int **matriz,p pos){
 				pSiguiente = Derecha(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
-					correlativo = correlativo + 1;
+					//correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
 			}
 			//Abajo
-			printf("el valor es abajo :%i\n",verificarAbajo(pActual,pActual.ciudad));
+			//printf("el valor es abajo :%i\n",verificarAbajo(pActual,pActual.ciudad));
 			if(verificarAbajo(pActual,pActual.ciudad) == 1){
 				Nciudad = copiarMatriz(pActual.ciudad);
 				pAnterior = pActual;
@@ -572,14 +592,14 @@ int automatico(int **matriz,p pos){
 				pSiguiente = Abajo(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
-					correlativo = correlativo + 1;
+					//correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
 
 			}
 			//Izquierda
-			printf("el valor es Izquierda :%i\n",verificarIzquierda(pActual,pActual.ciudad));
+			//printf("el valor es Izquierda :%i\n",verificarIzquierda(pActual,pActual.ciudad));
 			if(verificarIzquierda(pActual,pActual.ciudad) == 1){
 				Nciudad = copiarMatriz(pActual.ciudad);
 				pAnterior = pActual;
@@ -590,30 +610,35 @@ int automatico(int **matriz,p pos){
 				pSiguiente = Izquierda(pActual,Nciudad);
 				if((estaEstado(abiertos,canAbiertos,pSiguiente) == 0) && (estaEstado(cerrados,canCerrados,pSiguiente) == 0)){
 					abiertos = agregarEstado(abiertos,&canAbiertos,pSiguiente);
-					correlativo = correlativo + 1;
+					//correlativo = correlativo + 1;
 				}else{
 					correlativo = correlativo - 1;
 				}
 			}
 
 		}
+			printf("ABIERTOS:");
+		for (int i = 0; i < canAbiertos; ++i)
+		{
+			imprimirEstado(abiertos[i]);
+		}
+		printf("\nCERRADOS:");
+		for (int i = 0; i < canCerrados; ++i)
+		{
+			imprimirEstado(cerrados[i]);
+		}
+		/*
+		printf("\nTODOS:");
+		for (int i = 0; i < correlativo; ++i)
+		{
+			imprimirEstado(todosEstados[i]);
+		}
+		printf("\n\n");
+		*/
 		
 	}
-	/*
-	printf("ABIERTOS:");
-	for (int i = 0; i < canAbiertos; ++i)
-	{
-		imprimirEstado(abiertos[i]);
-	}
 
-
-	printf("\nCERRADOS:");
-	for (int i = 0; i < canCerrados; ++i)
-	{
-		imprimirEstado(cerrados[i]);
-	}
-	printf("\n\n");
-	*/
+	return 0;
 
 }
 
@@ -622,24 +647,25 @@ int main(){
 	int **matriz1 = leermatriz();
 	int **matriz2 = leermatriz();
 	p pos;
-	pos.x = 5;
+	pos.x = 3;
 	pos.y = 0;
 	correlativo = 0;
-<<<<<<< Updated upstream
-=======
+
+
 	FILE *registro;
 	registro = fopen("registroLab.txt", "w");
 	fclose(registro);
 	pos.x = 5;
 	pos.y = 0;
 	correlativo = 0;
->>>>>>> Stashed changes
+
 	int posx = 0;
 	int posy = 5;
 	int Menu = 1;
 	int opcion;
 	int proceso;
 	int k = 1;
+	printf("el valor de m es :%i\n",m);
 	while(Menu = 1){
 		printf("Menu de procesos:\n");
 		printf("1 generar mapa por entrada\n");
@@ -650,7 +676,7 @@ int main(){
 		switch(proceso){
 			case 1:
 				system("clear");
-<<<<<<< Updated upstream
+
 				printf("hola en esto momentos spiderman recorrera la ciudad\n");
 				automatico(matriz1,pos);
 				Menu = 2;
@@ -658,7 +684,7 @@ int main(){
 			case 2:
 				system("clear");
 				movimientosManual(matriz2,pos);
-=======
+
 				printf("Hola, en este momento se generará el mapa de la ciudad\n");
 				printf("Menu:\n");
 
@@ -689,7 +715,7 @@ int main(){
     				break;
 				}
 			break;
-			case 2:
+			case 3:
 				system("clear");
 				printf("Hola, en este momento se generará el mapa de la ciudad\n");
 				printf("Menu:\n");
@@ -714,16 +740,16 @@ int main(){
 					default:
     				break;
 				}
->>>>>>> Stashed changes
+
 			break;
-			case 3:
+			case 4:
 				Menu = 2;
 				return 0;
 			break;
 			default: 
 				Menu = 2;
 		}
-<<<<<<< Updated upstream
+
 	}
 	//imprimirMatriz(matriz,pos.x,pos.y);
 	//movimientosManual(matriz,pos);
@@ -764,9 +790,4 @@ int main(){
 			printf("%i\n",PistasColumnas[k][i]);
 		}
 	} */ 	     	
-
-=======
-	}	     	
->>>>>>> Stashed changes
-	return 0;
 }
