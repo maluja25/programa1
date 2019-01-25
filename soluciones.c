@@ -139,27 +139,60 @@ int **leermatriz(){
    m=-1;
    while (fgets(linea, MAX_LIN, fp)!=NULL) {
      m=m+1;
-     printf("La linea es : %s\n", linea);
+     //printf("La linea es : %s\n", linea);
      matriz[m] = (int *) calloc(MAX_LIN, sizeof(int));
      p = strtok(linea," ");
      n=-1;
      while(p != NULL) {
        n=n+1;
        sscanf(p,"%d",&val);
-       printf("%d\n",val);
+       //printf("%d\n",val);
        matriz[m][n] = val;
        p=strtok(NULL," ");
      }
     }
   	return matriz;
 }
+int rellenarInicial(int i,int n,int **matriz,int **matrizInicial){
+	int j=0;
+	while(j < n){
+		matrizInicial[i-1][j] = matriz[i][j+1];
+		j++;
+	}
+}
 int main(){
 	int **matriz = leermatriz();
 	int cantidadSoluciones = 0;
+	int **matrizInicial;
+	matrizInicial = (int **)malloc(sizeof(int *)*matriz[0][0]);
+	for (int i = 0; i < matriz[0][0]; ++i)
+	{
+		matrizInicial[i] = (int *)malloc(sizeof(int)*10);
+	}
+	for (int i = 1; i <= matriz[0][0] ; ++i)
+	{
+		for (int j = 0; j < matriz[i][0] + 1; ++j)
+		{
+			printf("%i",matriz[i][j]);
+		}
+		printf("\n");
+	}
+	for (int i = 1; i <= matriz[0][0]; ++i)
+	{
+		rellenarInicial(i,matriz[i][0],matriz,matrizInicial);
+	}
+	for (int i = 0; i < matriz[0][0]; ++i)
+	{
+		for (int j = 0; j < matriz[0][0]; ++j)
+		{
+			printf("%i",matrizInicial[i][j]);
+		}
+		printf("\n");
+	}
 	//arreglo que almacenara todos los posibles tableros a crear.
 	int *** conjuntoSoluciones = (int ***)malloc(sizeof(int**)*cantidadSoluciones);
 	imprimirSoluciones(conjuntoSoluciones, cantidadSoluciones);
-
+ 	
 
 
 

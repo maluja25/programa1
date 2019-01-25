@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #define MAX_LIN 1000
 
 //Variables
@@ -191,7 +192,7 @@ posicion Izquierda(posicion estado,int **nuevaCiudad){
 }
 int estaEstado(posicion * lista, int elementos, posicion estado){
 	for (int i = 0; i < elementos; ++i){
-		if((lista[i].x == estado.x) && (lista[i].y == estado.y) && (lista[i].ciudad[estado.y][estado.x] == estado.ciudad[estado.y][estado.x]) && lista[i].idEstado == estado.idEstado)
+		if((lista[i].x == estado.x) && (lista[i].y == estado.y) && (lista[i].ciudad[estado.y][estado.x] == estado.ciudad[estado.y][estado.x])&& lista[i].idEstado == estado.idEstado)
 			return 1;
 	}return 0;
 }
@@ -202,7 +203,7 @@ int mostrarSolucion(posicion * lista, int ultimo){
 	printf("Los pasos son, del ultimo al primero: \n");
 	for (int i = 0; i < ultimo; ++i)
 	{
-		printf("id:%i ea:%i \n",lista[i].idEstado,lista[i].estadoAnterior);
+		//printf("id:%i ea:%i \n",lista[i].idEstado,lista[i].estadoAnterior);
 	}
 	while(lista[ultimo].idEstado != 0){
 		printf("%s\n", lista[ultimo].movimiento);
@@ -300,7 +301,7 @@ void columnas(int **PistasColumnas,int numero,int **matriz){
 }
 
 int **leermatriz(){
-  FILE* fp=fopen("matriz1.txt","r");
+  FILE* fp=fopen("matriz.txt","r");
    char linea[MAX_LIN], *p;
    int val;
    int **matriz= (int **) calloc(1000, sizeof(int *)) ;
@@ -394,6 +395,26 @@ int verificarMovimiento(int **matriz,p pos){
 	}
 }
 int movimientosManual(int **matriz,p pos){
+	time_t t;
+  	struct tm *tm;
+  	char fechayhora[100];
+  	char hora[100];
+  	char minuto[100];
+  	char segundo[100];
+  	char dia[100];
+  	char mes[100];
+  	char ano[100];
+ 	t=time(NULL);
+  	tm=localtime(&t);
+ 	strftime(fechayhora, 100, "%m", tm);
+ 	strftime(hora, 100, "%H", tm);
+ 	strftime(minuto, 100, "%M", tm);
+ 	strftime(segundo, 100, "%S", tm);
+ 	strftime(dia, 100, "%d ", tm);
+ 	strftime(mes, 100, "%m", tm);
+ 	strftime(ano, 100, "%Y ", tm);
+ 	printf ("Hoy es: %s\n", hora);
+   	FILE *registroFecha;
 	FILE *registro;
  	registro = fopen("registroLab.txt", "a");
 	int n;
@@ -407,9 +428,11 @@ int movimientosManual(int **matriz,p pos){
 	printf("4 OESTE <-\n");
 	scanf("%i",&n);
 	printf("el n es :%i\n",n);
+	
 	switch(n){
 		//arriba
 		case 1:
+			registroFecha = fopen("registroFechasLab.txt","a");
 			system("clear");
 			if(pos.y == 0 ){
 				printf("MOVIMIENTO INVALIDO\n");
@@ -422,6 +445,9 @@ int movimientosManual(int **matriz,p pos){
 			else{
 				int N = 'N';
 				fputc(N,registro);
+				fprintf(registroFecha, "NORTE el dia %s/%s/%s a la hora:%s:%s:%s",dia,mes,ano,hora,minuto,segundo);
+				fprintf(registroFecha,"\n");
+				fclose(registroFecha);
 				fclose(registro);
 				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
 				pos.y--;
@@ -430,6 +456,7 @@ int movimientosManual(int **matriz,p pos){
 			return 1;
 		break;
 		case 2:
+			registroFecha = fopen("registroFechasLab.txt","a");
 			system("clear");
 			if(pos.x == m ){
 				printf("MOVIMIENTO INVALIDO\n");
@@ -442,6 +469,9 @@ int movimientosManual(int **matriz,p pos){
 			else{
 				int E = 'E';
 				fputc(E,registro);
+				fprintf(registroFecha, "ESTE el dia %s/%s/%s a la hora:%s:%s:%s",dia,mes,ano,hora,minuto,segundo);
+				fprintf(registroFecha,"\n");
+				fclose(registroFecha);
 				fclose(registro);
 				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
 				pos.x++;
@@ -450,6 +480,7 @@ int movimientosManual(int **matriz,p pos){
 			return 2;
 		break;
 		case 3:
+			registroFecha = fopen("registroFechasLab.txt","a");
 			system("clear");
 			if(pos.y == m ){
 				printf("MOVIMIENTO INVALIDO\n");
@@ -461,6 +492,9 @@ int movimientosManual(int **matriz,p pos){
 			}
 			else{
 				int S = 'S';
+				fprintf(registroFecha, "SUR el dia %s/%s/%s a la hora:%s:%s:%s",dia,mes,ano,hora,minuto,segundo);
+				fprintf(registroFecha,"\n");
+				fclose(registroFecha);
 				fputc(S,registro);
 				fclose(registro);
 				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
@@ -471,6 +505,7 @@ int movimientosManual(int **matriz,p pos){
 			return 3;
 		break;
 		case 4:
+			registroFecha = fopen("registroFechasLab.txt","a");
 			system("clear");
 			if(pos.x == 0 ){
 				printf("MOVIMIENTO INVALIDO\n");
@@ -482,6 +517,9 @@ int movimientosManual(int **matriz,p pos){
 			}
 			else{
 				int O = 'O';
+				fprintf(registroFecha, "OESTE el dia %s/%s/%s a la hora:%s:%s:%s",dia,mes,ano,hora,minuto,segundo);
+				fprintf(registroFecha,"\n");
+				fclose(registroFecha);
 				fputc(O,registro);
 				fclose(registro);
 				matriz[pos.y][pos.x] = matriz[pos.y][pos.x] - 1;
@@ -513,6 +551,13 @@ int **copiarMatriz(int **matriz){
 			nuevaMatriz[i][j] = matriz[i][j]; 
 		}
 	}
+	/*
+   	for(i = 0; i<m+1;i++)
+    {
+    	free(matriz[i]);
+    }
+    free(matriz);
+    */
 	return nuevaMatriz;
 }
 int automatico(int **matriz,p pos){
@@ -529,6 +574,7 @@ int automatico(int **matriz,p pos){
 	abiertos = agregarEstado(abiertos, &canAbiertos, inicial);
 	printf("canAbiertos :%i\n",canAbiertos);
 	while(canAbiertos > 0){
+		printf("la cantidad de abiertos es %i\n",canAbiertos);
 		pActual = abiertos[0];
 		abiertos = sacarElemento(abiertos, &canAbiertos);
 		cerrados = agregarEstado(cerrados, &canCerrados,pActual);
@@ -617,6 +663,7 @@ int automatico(int **matriz,p pos){
 			}
 
 		}
+		/*
 			printf("ABIERTOS:");
 		for (int i = 0; i < canAbiertos; ++i)
 		{
@@ -650,80 +697,44 @@ int main(){
 	pos.x = 3;
 	pos.y = 0;
 	correlativo = 0;
-
-
 	FILE *registro;
 	registro = fopen("registroLab.txt", "w");
 	fclose(registro);
 	pos.x = 5;
 	pos.y = 0;
 	correlativo = 0;
-
 	int posx = 0;
 	int posy = 5;
 	int Menu = 1;
-	int opcion;
+	int opcion1;
+	int opcion2;
 	int proceso;
 	int k = 1;
+	time_t tiempo = time(0);
+    struct tm *tlocal = localtime(&tiempo);
+    char output[128];
+    strftime(output,128,"%d/%m/%y %H:%M:%S",tlocal);
+    printf("%s\n",output);
 	printf("el valor de m es :%i\n",m);
-	while(Menu = 1){
+	while(Menu == 1){
 		printf("Menu de procesos:\n");
 		printf("1 generar mapa por entrada\n");
 		printf("2 generar el proceso inverso \n");
 		printf("3 salir\n");
-		proceso = getchar();
-		proceso = proceso%48;
-		switch(proceso){
+		scanf("%i",&opcion1);
+		switch(opcion1){
 			case 1:
-				system("clear");
-
-				printf("hola en esto momentos spiderman recorrera la ciudad\n");
-				automatico(matriz1,pos);
-				Menu = 2;
+				Menu = Menu+1;	
 			break;
 			case 2:
 				system("clear");
-				movimientosManual(matriz2,pos);
-
-				printf("Hola, en este momento se generará el mapa de la ciudad\n");
-				printf("Menu:\n");
-
-
-				//agregar matriz por entrada
-
-
-
-				printf("1 modo automatico\n");
-				printf("2 modo manual\n");
-				printf("3 salir\n");
-				scanf("%i",&opcion);
-				switch(opcion){
-					case 1:
-						system("clear");
-						printf("Spiderman recorrerá la ciudad\n");
-//						automatico(matriz1,pos);
-						Menu = 2;
-					break;
-					case 2:
-						system("clear");
-//						movimientosManual(matriz2,pos);
-					break;
-					case 3:
-						Menu = 2;
-					break;
-					default:
-    				break;
-				}
-			break;
-			case 3:
-				system("clear");
 				printf("Hola, en este momento se generará el mapa de la ciudad\n");
 				printf("Menu:\n");
 				printf("1 modo automatico\n");
 				printf("2 modo manual\n");
 				printf("3 salir\n");
-				scanf("%i",&opcion);
-				switch(opcion){
+				scanf("%i",&opcion2);
+				switch(opcion2){
 					case 1:
 						system("clear");
 						printf("Spiderman recorrerá la ciudad\n");
@@ -738,56 +749,13 @@ int main(){
 						Menu = 2;
 					break;
 					default:
+						Menu = 2;
     				break;
-				}
-
-			break;
-			case 4:
+    			    }
+			case 3:
 				Menu = 2;
-				return 0;
 			break;
-			default: 
-				Menu = 2;
 		}
-
 	}
-	//imprimirMatriz(matriz,pos.x,pos.y);
-	//movimientosManual(matriz,pos);
-	/*while(movimientosManual(matriz,pos)<5){
-		system("clear");	
-	}
-
-	/*
-	int **PistasFilas;
-	PistasFilas = (int **)malloc(sizeof(int * ) * numero);
-	for(int i = 0; i < (numero); ++i)
-	{
-		PistasFilas[i] = (int *)malloc(sizeof(int ));
-	}
-	/* 
-	arreglo dinamico doble que almacenara las pistas por columnas
-	int **PistasColumnas;
-	PistasColumnas = (int **)malloc(sizeof(int * ) * numero);
-	for(int i = 0; i < (numero); ++i)
-	{
-		PistasColumnas[i] = (int *)malloc(sizeof(int ));
-	}
-	filas(PistasFilas,numero,matriz);
-	for(int k = 0; k < numero; k++){
-		for (int i = 0; i <= PistasFilas[k][0]; ++i)
-		{
-			printf("%i ",PistasFilas[k][i]);
-		}
-		printf("\n");
-	}
-
-
-	/*
-	columnas(PistasColumnas,numero,matriz);
-	for(int k = 0; k < numero; k++){
-		for (int i = 0; i < numero; ++i)
-		{
-			printf("%i\n",PistasColumnas[k][i]);
-		}
-	} */ 	     	
+	return 0;	     	
 }
